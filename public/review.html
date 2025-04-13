@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rate Your Experience</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a56d4;
+            --accent-color: #ffb400;
+            --text-color: #333;
+            --text-light: #666;
+            --background: #f8f9fa;
+            --white: #fff;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --radius: 15px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--background);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        }
+        
+        .container {
+            width: 92%;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        
+        .review-card {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            padding: 35px 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .review-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .logo-container {
+            margin-bottom: 25px;
+        }
+        
+        .business-logo {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            border-radius: 50%;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 3px solid #fff;
+            background-color: #fff;
+            padding: 3px;
+        }
+        
+        /* Default logo if no image is provided */
+        .logo-placeholder {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            color: var(--white);
+            font-size: 36px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 3px solid #fff;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: var(--text-light);
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        
+        /* Étoiles de notation améliorées */
+        .stars-container {
+            margin: 35px 0;
+        }
+        
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+        }
+        
+        .star-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .star {
+            font-size: 48px;
+            color: #ddd;
+            cursor: pointer;
+            transition: transform 0.3s, color 0.3s;
+            user-select: none;
+            -webkit-user-select: none;
+            position: relative;
+            filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.1));
+        }
+        
+        .star-number {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+        
+        .star:hover, .star.active, .star.hover {
+            color: var(--accent-color);
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 5px rgba(255, 180, 0, 0.4));
+        }
+        
+        /* Animation pour la 5ème étoile */
+        .star-wrapper:last-child .star {
+            animation: attention 3s infinite;
+        }
+        
+        @keyframes attention {
+            0%, 100% { transform: scale(1); }
+            85% { transform: scale(1); }
+            90% { transform: scale(1.25); }
+            95% { transform: scale(1.15); }
+        }
+        
+        /* Animation de brillance pour les étoiles lorsqu'elles sont survolées */
+        .star:hover::after,
+        .star.active::after,
+        .star.hover::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,180,0,0.6) 0%, rgba(255,180,0,0) 70%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            opacity: 0.7;
+            animation: glow 1.5s infinite alternate;
+            pointer-events: none;
+        }
+        
+        @keyframes glow {
+            from { opacity: 0.5; width: 90%; height: 90%; }
+            to { opacity: 0.8; width: 130%; height: 130%; }
+        }
+        
+        /* Effet de pulsation quand on sélectionne une étoile */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .star.selected {
+            animation: pulse 0.4s forwards;
+        }
+        
+        /* Feedback Form */
+        .feedback-form {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease-out;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+        
+        .feedback-heading {
+            color: var(--primary-color);
+            font-size: 20px;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+        
+        [dir="rtl"] .feedback-heading {
+            text-align: right;
+        }
+        
+        .feedback-subtitle {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        [dir="rtl"] .feedback-subtitle {
+            text-align: right;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: none;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1);
+        }
+        
+        button {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+            color: var(--white);
+            border: none;
+            border-radius: 25px;
+            padding: 14px 0;
+            width: 60%;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            -webkit-appearance: none;
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+        }
+        
+        button:hover, button:active {
+            background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.4);
+        }
+        
+        /* Thank You Message */
+        .thank-you {
+            display: none;
+            margin: 30px 0;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .thank-you h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .thank-you p {
+            color: var(--text-light);
+            font-size: 16px;
+        }
+        
+        /* Loading Animation */
+        .loader {
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin: 20px auto;
+            border: 4px solid rgba(67, 97, 238, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Wave background effect */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill="%234361ee" fill-opacity="0.05" d="M0,192L48,176C96,160,192,128,288,133.3C384,139,480,181,576,202.7C672,224,768,224,864,229.3C960,235,1056,245,1152,218.7C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 380px) {
+            .stars {
+                gap: 15px;
+            }
+            
+            .star {
+                font-size: 40px;
+            }
+            
+            .star-number {
+                font-size: 10px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .subtitle {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="review-card">
+            <div class="wave"></div>
+            
+            <div class="logo-container" id="logo-container">
+                <!-- Logo will be inserted here by JavaScript -->
+            </div>
+            
+            <h1 id="title">How was your experience?</h1>
+            <p class="subtitle" id="subtitle">Please rate your experience with us</p>
+            
+            <div class="stars-container">
+                <div class="stars">
+                    <div class="star-wrapper">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star-number">1</span>
+                    </div>
+                    <div class="star-wrapper">
+                        <span class="star" data-value="2">★</span>
+                        <span class="star-number">2</span>
+                    </div>
+                    <div class="star-wrapper">
+                        <span class="star" data-value="3">★</span>
+                        <span class="star-number">3</span>
+                    </div>
+                    <div class="star-wrapper">
+                        <span class="star" data-value="4">★</span>
+                        <span class="star-number">4</span>
+                    </div>
+                    <div class="star-wrapper">
+                        <span class="star" data-value="5">★</span>
+                        <span class="star-number">5</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="feedback-form" class="feedback-form">
+                <h2 class="feedback-heading" id="feedback-heading">What could we improve?</h2>
+                <p class="feedback-subtitle" id="feedback-subtitle">Your feedback helps us serve you better</p>
+                <textarea id="feedback-text" placeholder="Please share your thoughts..."></textarea>
+                <button id="submit-feedback">Submit Feedback</button>
+            </div>
+            
+            <div class="loader" id="loader"></div>
+            
+            <div id="thank-you" class="thank-you">
+                <h2 id="thank-you-title">Thank you for your feedback!</h2>
+                <p id="thank-you-message">We appreciate your comments and will use them to improve our service.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Parse URL parameters
+            const params = new URLSearchParams(window.location.search);
+            const businessName = params.get('name') ? decodeURIComponent(params.get('name')) : 'Business';
+            const placeId = params.get('place_id') || '';
+            const lang = params.get('lang') || 'en';
+            
+            // Update page title
+            document.title = businessName + ' - Review';
+            
+            // Set text content
+            document.getElementById('title').textContent = 'How was your experience?';
+            document.getElementById('subtitle').textContent = 'Please rate your experience with ' + businessName;
+            
+            // Set page direction for RTL languages
+            if (lang === 'ar') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = 'ar';
+                
+                // Update text for Arabic
+                document.getElementById('title').textContent = 'كيف كانت تجربتك؟';
+                document.getElementById('subtitle').textContent = 'يرجى تقييم تجربتك مع ' + businessName;
+                document.getElementById('feedback-heading').textContent = 'ما الذي يمكننا تحسينه؟';
+                document.getElementById('feedback-subtitle').textContent = 'تعليقاتك تساعدنا على خدمتك بشكل أفضل';
+                document.getElementById('thank-you-title').textContent = 'شكرا لك على ملاحظاتك!';
+                document.getElementById('thank-you-message').textContent = 'نحن نقدر تعليقاتك وسنستخدمها لتحسين خدمتنا';
+                document.getElementById('submit-feedback').textContent = 'إرسال';
+                document.getElementById('feedback-text').placeholder = 'يرجى مشاركة أفكارك...';
+            } else if (lang === 'fr') {
+                // Update text for French
+                document.getElementById('title').textContent = 'Comment était votre expérience?';
+                document.getElementById('subtitle').textContent = 'Veuillez évaluer votre expérience avec ' + businessName;
+                document.getElementById('feedback-heading').textContent = 'Que pourrions-nous améliorer?';
+                document.getElementById('feedback-subtitle').textContent = 'Vos commentaires nous aident à mieux vous servir';
+                document.getElementById('thank-you-title').textContent = 'Merci pour vos commentaires!';
+                document.getElementById('thank-you-message').textContent = 'Nous apprécions vos commentaires et les utiliserons pour améliorer notre service';
+                document.getElementById('submit-feedback').textContent = 'Soumettre';
+                document.getElementById('feedback-text').placeholder = 'Veuillez partager vos pensées...';
+            }
+            
+            // Si aucun logo n'est déjà visible, créer un placeholder avec les initiales
+            const logoContainer = document.getElementById('logo-container');
+            if (!logoContainer.querySelector('.business-logo')) {
+                // Create logo placeholder with business initials
+                const placeholder = document.createElement('div');
+                placeholder.className = 'logo-placeholder';
+                
+                // Get business initials (up to 2 characters)
+                const initials = businessName
+                    .split(' ')
+                    .filter(word => word.length > 0)
+                    .map(word => word[0])
+                    .slice(0, 2)
+                    .join('')
+                    .toUpperCase();
+                
+                placeholder.textContent = initials;
+                logoContainer.appendChild(placeholder);
+            }
+            
+            // Handle star rating
+            const stars = document.querySelectorAll('.star');
+            const feedbackForm = document.getElementById('feedback-form');
+            const thankYouMessage = document.getElementById('thank-you');
+            const loader = document.getElementById('loader');
+            
+            stars.forEach(star => {
+                // Effet hover dynamique pour montrer la note en temps réel
+                star.addEventListener('mouseover', function() {
+                    const hoverRating = parseInt(this.getAttribute('data-value'));
+                    
+                    // Affiche les étoiles jusqu'à celle survolée
+                    stars.forEach(s => {
+                        const value = parseInt(s.getAttribute('data-value'));
+                        if (value <= hoverRating) {
+                            s.classList.add('hover');
+                        } else {
+                            s.classList.remove('hover');
+                        }
+                    });
+                });
+                
+                // Restaure l'affichage des étoiles actives quand on quitte le survol
+                star.addEventListener('mouseout', function() {
+                    stars.forEach(s => {
+                        s.classList.remove('hover');
+                    });
+                });
+                
+                // Gestion du clic sur une étoile
+                star.addEventListener('click', function() {
+                    const rating = parseInt(this.getAttribute('data-value'));
+                    
+                    // Ajoute un effet de pulsation sur l'étoile sélectionnée
+                    this.classList.add('selected');
+                    setTimeout(() => this.classList.remove('selected'), 400);
+                    
+                    // Highlight selected stars
+                    stars.forEach(s => {
+                        const value = parseInt(s.getAttribute('data-value'));
+                        if (value <= rating) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+                    
+                    // Si note 4 ou 5, redirection vers Google Maps avec délai pour voir l'animation
+                    if (rating >= 4) {
+                        setTimeout(() => {
+                            window.location.href = `https://search.google.com/local/writereview?placeid=${placeId}`;
+                        }, 800);
+                    } else {
+                        // Montrer le formulaire de feedback pour les notes < 4
+                        setTimeout(() => {
+                            feedbackForm.style.display = 'block';
+                        }, 400);
+                    }
+                });
+            });
+            
+            // Handle feedback submission
+            document.getElementById('submit-feedback').addEventListener('click', function() {
+                const feedbackText = document.getElementById('feedback-text').value;
+                
+                if (!feedbackText.trim()) {
+                    // Add subtle shake animation if empty
+                    document.getElementById('feedback-text').style.borderColor = '#ff6b6b';
+                    setTimeout(() => {
+                        document.getElementById('feedback-text').style.borderColor = '#ddd';
+                    }, 2000);
+                    return;
+                }
+                
+                // Show loader
+                feedbackForm.style.display = 'none';
+                loader.style.display = 'block';
+                
+                // Prepare submission data
+                const data = {
+                    business: businessName,
+                    feedback: feedbackText,
+                    rating: document.querySelectorAll('.star.active').length,
+                    timestamp: new Date().toISOString(),
+                    language: lang
+                };
+                
+                // Simulate sending to server/Google Sheets (would be replaced with actual API call)
+                setTimeout(() => {
+                    // Hide loader and show thank you message
+                    loader.style.display = 'none';
+                    thankYouMessage.style.display = 'block';
+                    
+                    console.log('Feedback submitted:', data);
+                    
+                    // In production, here's where you'd send data to your server:
+                    /*
+                    fetch('https://your-server-endpoint.com/feedback', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        // Hide loader and show thank you message
+                        loader.style.display = 'none';
+                        thankYouMessage.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('There was an error submitting your feedback. Please try again.');
+                    });
+                    */
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>

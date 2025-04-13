@@ -1,38 +1,364 @@
-.App {
+/* App.css - Alpha Review Generator Styles */
+
+:root {
+  --primary-color: #4361ee;
+  --primary-dark: #3a56d4;
+  --secondary-color: #4895ef;
+  --text-color: #333;
+  --light-text: #666;
+  --light-bg: #f8f9fa;
+  --white: #ffffff;
+  --border-color: #e0e0e0;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --radius: 12px;
+  --transition: all 0.3s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, sans-serif;
+  background-color: var(--light-bg);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* Main container */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* Header */
+header {
   text-align: center;
+  margin-bottom: 3rem;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+header h1 {
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+header p {
+  font-size: 1.1rem;
+  color: var(--light-text);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Main content */
+main {
+  display: flex;
+  justify-content: center;
+}
+
+.generator-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  width: 100%;
+}
+
+/* Input section */
+.input-section, .preview-section {
+  flex: 1;
+  min-width: 300px;
+  background-color: var(--white);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+h2 {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.required {
+  color: #e74c3c;
+}
+
+input[type="text"],
+select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+input[type="text"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+}
+
+.file-input {
+  width: 100%;
+  padding: 0.8rem 0;
+}
+
+.helper-text {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--light-text);
+}
+
+.helper-text a {
+  color: var(--secondary-color);
+  text-decoration: none;
+}
+
+.helper-text a:hover {
+  text-decoration: underline;
+}
+
+.logo-preview {
+  margin-top: 1rem;
+  text-align: center;
+  padding: 1rem;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius);
+}
+
+.logo-preview img {
+  max-width: 120px;
+  max-height: 120px;
+}
+
+.generate-btn {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 1rem;
+}
+
+.generate-btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+}
+
+.generate-btn:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Preview section */
+.preview-content {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1.5rem;
+}
+
+/* QR Code Styling */
+.qr-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px;
+  background-color: var(--white);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 300px;
+  transition: var(--transition);
+}
+
+.qr-preview:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.qr-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.qr-preview canvas {
+  border: 5px solid var(--white);
+  border-radius: 5px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.qr-business-name {
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+  color: var(--primary-color);
+}
+
+.qr-scan-text {
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+  color: var(--light-text);
+}
+
+.generated-link {
+  width: 100%;
+}
+
+.generated-link label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* Ajoutez ce CSS dans votre fichier App.css */
+
+.link-display {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.link-display input {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background-color: var(--light-bg);
+  transition: background-color 0.2s;
+}
+
+.link-display input:hover {
+  background-color: #e9ecef;
+}
+
+.link-display button {
+  padding: 0.8rem 1.2rem;
+  background-color: var(--secondary-color);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.link-display button:hover {
+  background-color: #3d81d6;
+  transform: translateY(-2px);
+}
+
+.download-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+}
+
+.download-btn {
+  flex: 1;
+  min-width: 150px;
+  padding: 1rem;
+  background-color: var(--secondary-color);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.download-btn:hover {
+  background-color: #3d81d6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(72, 149, 239, 0.3);
+}
+
+.empty-preview {
+  height: 400px;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  border: 2px dashed #e0e0e0;
+  border-radius: var(--radius);
 }
 
-.App-link {
-  color: #61dafb;
+.empty-preview-content {
+  text-align: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.empty-preview-content p {
+  margin-top: 1rem;
+  color: #999;
+}
+
+/* Responsive styling */
+@media (max-width: 992px) {
+  .generator-section {
+    flex-direction: column;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .input-section, .preview-section {
+    width: 100%;
   }
+  
+  .qr-preview {
+    max-width: 250px;
+  }
+}
+
+@media (max-width: 576px) {
+  .app-container {
+    padding: 1rem;
+  }
+  
+  header h1 {
+    font-size: 2rem;
+  }
+  
+  .input-section, .preview-section {
+    padding: 1.5rem;
+  }
+  
+  .download-options {
+    flex-direction: column;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
 }
