@@ -1,0 +1,13 @@
+[build]
+  publish = "build"
+  command = "npm run build"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  
+[[redirects]]
+  from = "/review.html"
+  to = "/review.html"
+  status = 200
